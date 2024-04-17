@@ -11,9 +11,9 @@
 #define HLL_REGISTERS (1 << HLL_P)     /* With P=14, 16384 registers. */
 #define HLL_P_MASK (HLL_REGISTERS - 1) /* Mask to index register. */
 
-static uint64_t deBruijn64 = 0x03f79d71b4ca8b09;
+static uint64_t de_bruijn64 = 0x03f79d71b4ca8b09;
 
-static int deBruijn64Lookup[64] = {
+static int de_bruijn_64_lookup[64] = {
     0,  1,  56, 2,  57, 49, 28, 3,  61, 58, 42, 50, 38, 29, 17, 4,
     62, 47, 59, 36, 45, 43, 51, 22, 53, 39, 33, 30, 24, 18, 12, 5,
     63, 55, 48, 27, 60, 41, 37, 16, 46, 35, 44, 21, 52, 32, 23, 11,
@@ -22,9 +22,9 @@ static int deBruijn64Lookup[64] = {
 
 static int rightmostIndex64DeBruijn(uint64_t b) {
   b &= -b;
-  b *= deBruijn64;
+  b *= de_bruijn64;
   b >>= 58;
-  return deBruijn64Lookup[b] + 1;
+  return de_bruijn_64_lookup[b] + 1;
 }
 
 static int rightmostIndex64BitShift(uint64_t b) {

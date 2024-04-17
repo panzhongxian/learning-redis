@@ -112,5 +112,55 @@ The De Bruijn counting method is correct in our case and much more effective tha
 
 A replacement will bring a significant help.
 
+### 4. external benchmark
+
+Using the redis-benchmark tool, it also show the new method is faster. To avoid one element's hash is to specific, here I using 32 elem to insert.
+
+```bash
+./src/redis-benchmark -n 10000000 PFADD key 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32
+```
+
+benchmark result with bit shift version redis-server:
+
+```
+> ./src/redis-benchmark -n 10000000 PFADD key 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32
+====== PFADD key 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 ======
+  10000000 requests completed in 98.64 seconds
+  50 parallel clients
+  272 bytes payload
+  keep alive: 1
+  host configuration "save": 3600 1 300 100 60 10000
+  host configuration "appendonly": no
+  multi-thread: no
+Summary:
+  throughput summary: 101379.78 requests per second
+  latency summary (msec):
+          avg       min       p50       p95       p99       max
+        0.452     0.096     0.439     0.631     0.679     1.527
+```
+
+benchmark result with De Bruijn version redis-server:
+
+```
+> ./src/redis-benchmark -n 10000000 PFADD key 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32
+====== PFADD key 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 ======
+  10000000 requests completed in 91.91 seconds
+  50 parallel clients
+  272 bytes payload
+  keep alive: 1
+  host configuration "save": 3600 1 300 100 60 10000
+  host configuration "appendonly": no
+  multi-thread: no
+Summary:
+  throughput summary: 108799.72 requests per second
+  latency summary (msec):
+          avg       min       p50       p95       p99       max
+        0.421     0.096     0.407     0.551     0.583     2.535
+```
 
 
+
+### Referrence
+
+- <https://github.com/golang/go/blob/master/src/runtime/internal/sys/intrinsics.go#L53>
+- <https://en.wikipedia.org/wiki/De_Bruijn_sequence#Finding_least-_or_most-significant_set_bit_in_a_word>
