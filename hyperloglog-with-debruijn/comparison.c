@@ -61,6 +61,8 @@ int main() {
     ret += rightmostIndex64DeBruijn(num);
 #elif BITSHIFT
     ret += rightmostIndex64BitShift(num);
+#elif BUILTIN
+    ret += __builtin_ctzll(num) + 1;
 #elif CHECK
     num = (num << (n % 50)) | ((uint64_t)1 << 50);
     int len1 = rightmostIndex64BitShift(num);
